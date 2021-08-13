@@ -12,6 +12,20 @@ import connection_package.DbUtil;
 public class CallableStatementExample {
 
 	public static void simpleProcedure()  throws IOException, SQLException{
+		
+		/*
+		 
+		CREATE PROCEDURE display_students_with_departments()
+		BEGIN
+		  
+			SELECT stud_id, name, phone, final_cgpi, dept_name 
+			FROM student INNER JOIN department 
+			ON student.dept = department.dept_id;
+		  
+		END
+		  
+		 */
+		
 		Connection connection = DbUtil.getConnection();
 		
 		CallableStatement callableStatement = connection.prepareCall("{call display_students_with_departments()}");
@@ -26,6 +40,21 @@ public class CallableStatementExample {
 	}
 	
 	public static void procedureWithINParameter()  throws IOException, SQLException{
+		
+		/*
+		 
+		CREATE PROCEDURE just_echo 
+		(
+			IN data VARCHAR(50)
+		)  
+		BEGIN
+		
+			SELECT CONCAT("Text passed is: ", data);
+		
+		END
+		 
+		 */
+		
 		Connection connection = DbUtil.getConnection();
 		
 		CallableStatement callableStatement = connection.prepareCall("{call just_echo(?)}");
@@ -42,6 +71,23 @@ public class CallableStatementExample {
 	}
 	
 	public static void procedureWithOUTParameter()  throws IOException, SQLException{
+		
+		/*
+		 
+		CREATE PROCEDURE cal_sum
+		(
+			IN val1 INT, 
+			IN val2 INT, 
+			OUT ans INT
+		)  
+		BEGIN
+		
+			SET ans = val1 + val2;
+		
+		END
+		 
+		 */
+		
 		Connection connection = DbUtil.getConnection();
 		
 		CallableStatement callableStatement = connection.prepareCall("{call cal_sum(?,?,?)}");
@@ -59,9 +105,9 @@ public class CallableStatementExample {
 	}
 
 	public static void main(String[] args) throws IOException, SQLException {
-//		simpleProcedure();
+		simpleProcedure();
 //		procedureWithINParameter();
-		procedureWithOUTParameter();
+//		procedureWithOUTParameter();
 	}
 
 }

@@ -59,8 +59,8 @@ public class MetaDataDemo {
 	public static void resultSetMetadata() throws IOException, SQLException {
 		Connection connection = DbUtil.getConnection();
 		PreparedStatement ps = connection.prepareStatement("select * from student");
-		
 		ResultSet resultSet = ps.executeQuery();
+		
 		ResultSetMetaData rsmd = resultSet.getMetaData();
 		int totalColumns = rsmd.getColumnCount();
 		System.out.println("Total number of columns: " + totalColumns);
@@ -77,8 +77,8 @@ public class MetaDataDemo {
 	}
 
 	public static void main(String[] args) throws IOException, SQLException {
-//		databaseMetadata();
-		resultSetMetadata();
+		databaseMetadata();
+//		resultSetMetadata();
 	}
 
 }

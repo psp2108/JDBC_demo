@@ -40,41 +40,48 @@ public class TransactionDemo {
 		return updateAccount.executeUpdate();
 	}
 
+	public static int deductBalance(int accID, float amount) throws SQLException {
+		return updateBalance(accID, -amount);
+	}
+
+	public static int addBalance(int accID, float amount) throws SQLException {
+		return updateBalance(accID, amount);
+	}
+
 	public static void main(String[] args) throws FileNotFoundException, IOException, SQLException {
 		initialize();
-		
-		int rowsAffected = 0;
-		int from = 5002;
-		int to = 5000;
+
+		int rowsAffected;
+		int senderAccount = 5000;
+		int receiverAccount = 5002;
 		int amount = 123;
-		int initialBalance = -1, newBalance = -1;
-		
-/*
- * TASK --> Transfer 123 rs from Vijai (5000) to Siddhartha (5002)
- * FIRSTLY CHECK IF VIJAI HAS ENOUGH BALANCE TO TRANSFER
- * (ASSUME THIS CONDITION IS SATISFIED)
- */
+		int initialBalance = -1, finalBalance = -1;
+
+		/*
+		 * TASK --> Transfer 123 rs from Vijai (5000) to Siddhartha (5002) 
+		 * FIRSTLY CHECK IF VIJAI HAS ENOUGH BALANCE TO TRANSFER (ASSUME THIS CONDITION IS SATISFIED)
+		 */
 
 // Fetching initial sum of balance
-		initialBalance = getBalanceSum(from, to);
+		initialBalance = getBalanceSum(senderAccount, receiverAccount);
 		System.out.println("Initial Balance = " + initialBalance);
 
-// Updating balance from sender's account
-		rowsAffected = updateBalance(from, -amount);
-		System.out.println("Rows affected for " + from + " = " + rowsAffected);
-		rowsAffected=0;
+// Deduct balance from sender's account
+		rowsAffected = 0;
+		rowsAffected = deductBalance(senderAccount, amount);
+		System.out.println("Rows affected for " + senderAccount + " = " + rowsAffected);
 
-// Updating balance to receiver's account
-		rowsAffected = updateBalance(to, amount);
-		System.out.println("Rows affected for " + to + " = " + rowsAffected);
-		rowsAffected=0;
+// Add balance to receiver's account
+		rowsAffected = 0;
+		rowsAffected = addBalance(receiverAccount, amount);
+		System.out.println("Rows affected for " + receiverAccount + " = " + rowsAffected);
 
 // Fetching final sum of balance
-		newBalance = getBalanceSum(from, to);
-		System.out.println("Initial Balance = " + newBalance);
+		finalBalance = getBalanceSum(senderAccount, receiverAccount);
+		System.out.println("Initial Balance = " + finalBalance);
 
 // Check if the transaction is successful
-		if (initialBalance == newBalance) {
+		if (initialBalance == finalBalance) {
 			System.out.println("DB is consistent, commiting changes");
 			con.commit();
 		} else {

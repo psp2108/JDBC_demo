@@ -17,14 +17,13 @@ import connection_package.DbUtil;
 public class BlobAndClobDemo {
 
 	public static void insertBLOBFile(String inputFileName) throws SQLException, IOException {
-		FileInputStream fileInputStream = new FileInputStream(inputFileName);
+		InputStream fileInputStream = new FileInputStream(inputFileName);
 
 		Connection connection = DbUtil.getConnection();
-		// Data type used in MySQL is 'BLOB'
 		String query = "insert into blob_and_clob (file_name, binary_file) values (?,?)";
 		PreparedStatement prepareStatement = connection.prepareStatement(query);
 		prepareStatement.setString(1, "Image File 1");
-		prepareStatement.setBinaryStream(2, fileInputStream); // ***
+		prepareStatement.setBinaryStream(2, fileInputStream); // <<<<<
 
 		int rowsAffected = prepareStatement.executeUpdate();
 		System.out.println("Rows Affected = " + rowsAffected);
@@ -34,14 +33,13 @@ public class BlobAndClobDemo {
 	}
 
 	public static void insertCLOBFile(String inputFileName) throws IOException, SQLException {
-		FileReader fileReader = new FileReader(inputFileName);
+		Reader fileReader = new FileReader(inputFileName);
 
 		Connection connection = DbUtil.getConnection();
-		// Data type used in MySQL is 'LONGTEXT'
 		String query = "insert into blob_and_clob (file_name, text_file) values (?,?)";
 		PreparedStatement prepareStatement = connection.prepareStatement(query);
 		prepareStatement.setString(1, "Image File 1");
-		prepareStatement.setCharacterStream(2, fileReader); // ***
+		prepareStatement.setCharacterStream(2, fileReader); // <<<<<
 
 		int rowsAffected = prepareStatement.executeUpdate();
 		System.out.println("Rows Affected = " + rowsAffected);
@@ -58,13 +56,12 @@ public class BlobAndClobDemo {
 		ResultSet resultSet = prepareStatement.executeQuery();
 
 		if (resultSet.next()) {
-			InputStream inputstream = resultSet.getBinaryStream(1); // ***
-
+			InputStream inputstream = resultSet.getBinaryStream(1); // <<<<<
 			FileOutputStream fileOutputstreamfos = new FileOutputStream(outputFileName);
-			byte[] buffer = new byte[1024];
+			int bufferByte;
 
-			while ((inputstream.read(buffer)) > 0) {
-				fileOutputstreamfos.write(buffer);
+			while ((bufferByte = inputstream.read()) != -1) {
+				fileOutputstreamfos.write(bufferByte);
 			}
 
 			fileOutputstreamfos.close();
@@ -81,7 +78,7 @@ public class BlobAndClobDemo {
 		ResultSet resultSet = prepareStatement.executeQuery();
 
 		if (resultSet.next()) {
-			Reader reader = resultSet.getCharacterStream(1); // ***
+			Reader reader = resultSet.getCharacterStream(1); // <<<<<
 
 			FileWriter fileWriter = new FileWriter(outputFileName);
 			int bufferCharacter;
@@ -98,8 +95,10 @@ public class BlobAndClobDemo {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, SQLException {
 		insertBLOBFile("files/binary file.png");
-		fetchBLOBFile("files/from db.png");
-		insertCLOBFile("files/character file.txt");
-		fetchCLOBFile("files/from db.txt");
+//		fetchBLOBFile("files/from db.png");
+		
+		
+//		insertCLOBFile("files/character file.txt");
+//		fetchCLOBFile("files/from db.txt");
 	}
 }
